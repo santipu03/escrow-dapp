@@ -2,6 +2,7 @@ import { ethers } from "ethers"
 import { useEffect, useState } from "react"
 import deploy from "./deploy"
 import Escrow from "./Escrow"
+import server from "./server"
 
 const provider = new ethers.providers.Web3Provider(window.ethereum)
 
@@ -24,7 +25,48 @@ function App() {
         }
 
         getAccounts()
+        retrieveContracts()
     }, [account])
+
+    async function postContract(escrow) {
+        console.log(escrow)
+        try {
+            await server.post(`storeContract`, {
+                contract: escrow,
+            })
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    // function fillApproveFunction(contracts) {
+    //     const filledContracts = contracts.map((contract) => {
+    //         return {
+    //             ...contract,
+    //             handleApprove: async () => {
+    //                 escrowContract.on("Approved", () => {
+    //                     document.getElementById(escrowContract.address).className = "complete"
+    //                     document.getElementById(escrowContract.address).innerText =
+    //                         "✓ It's been approved!"
+    //                 })
+
+    //                 await approve(escrowContract, signer)
+    //             },
+    //         }
+    //     })
+    // }
+
+    async function retrieveContracts() {
+        try {
+            const {
+                data: { contracts },
+            } = await server.get(`getContracts`)
+            // fillApproveFunction(contracts)
+            console.log(contracts)
+        } catch (e) {
+            console.error(e)
+        }
+    }
 
     async function newContract() {
         const beneficiary = document.getElementById("beneficiary").value
@@ -50,6 +92,7 @@ function App() {
             },
         }
 
+        postContract(escrow)
         setEscrows([...escrows, escrow])
     }
 
