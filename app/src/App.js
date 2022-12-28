@@ -24,11 +24,12 @@ function App() {
             setAccount(accounts[0])
             setSigner(provider.getSigner())
         }
-
         getAccounts()
-        retrieveContracts()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [account])
+
+    useEffect(() => {
+        retrieveContracts()
+    })
 
     async function postContract(escrow) {
         try {
@@ -40,9 +41,8 @@ function App() {
         }
     }
 
-    async function setStoredContractInState(contract) {
+    async function getFullContractObject(contract) {
         const escrowContract = await getContract(signer, contract.address)
-
         const escrow = {
             address: contract.address,
             arbiter: contract.arbiter,
@@ -76,7 +76,7 @@ function App() {
             if (contracts.length > 0) {
                 let contractsArray = []
                 for (let i = 0; i < contracts.length; i++) {
-                    const contract = await setStoredContractInState(contracts[i])
+                    const contract = await getFullContractObject(contracts[i])
                     contractsArray.push(contract)
                 }
                 setEscrows(contractsArray)
