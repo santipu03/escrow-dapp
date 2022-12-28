@@ -10,8 +10,8 @@ let contracts = []
 
 app.post("/storeContract", (req, res) => {
     const { contract } = req.body
-    fitleredContracts = contracts.filter((item) => item.address !== contract.address)
-    contracts = [...fitleredContracts, contract]
+    filteredContracts = contracts.filter((item) => item.address !== contract.address)
+    contracts = [...filteredContracts, contract]
 })
 
 app.get("/getContracts", (req, res) => {
