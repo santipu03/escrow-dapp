@@ -1,6 +1,7 @@
 import { ethers } from "ethers"
 import { useEffect, useState } from "react"
-import deploy from "./deploy"
+import deploy from "./utils/deploy"
+import getContract from "./utils/getContract"
 import Escrow from "./Escrow"
 import server from "./server"
 
@@ -39,30 +40,47 @@ function App() {
         }
     }
 
-    // function fillApproveFunction(contracts) {
-    //     const filledContracts = contracts.map((contract) => {
-    //         return {
-    //             ...contract,
-    //             handleApprove: async () => {
-    //                 escrowContract.on("Approved", () => {
-    //                     document.getElementById(escrowContract.address).className = "complete"
-    //                     document.getElementById(escrowContract.address).innerText =
-    //                         "✓ It's been approved!"
-    //                 })
+    async function setStoredContractInState(contract) {
+        const escrowContract = await getContract(signer, contract.address)
 
-    //                 await approve(escrowContract, signer)
-    //             },
-    //         }
-    //     })
-    // }
+        const escrow = {
+            address: contract.address,
+            arbiter: contract.arbiter,
+            beneficiary: contract.beneficiary,
+            value: contract.value.toString(),
+            approved: contract.approved,
+            handleApprove: async () => {
+                await approve(escrowContract, signer)
+                const index = escrows.findIndex(
+                    (escrow) => escrow.address === escrowContract.address
+                )
+                const arrayWithoutItem = escrows.filter(
+                    (escrow) => escrow.address !== escrowContract.address
+                )
+                let approvedEscrow = escrows[index]
+                approvedEscrow.approved = true
+                setEscrows([...arrayWithoutItem, approvedEscrow])
+                postContract(approvedEscrow)
+            },
+        }
+
+        return escrow
+    }
 
     async function retrieveContracts() {
         try {
             const {
                 data: { contracts },
             } = await server.get(`getContracts`)
-            // fillApproveFunction(contracts)
-            console.log(contracts)
+
+            if (contracts.length > 0) {
+                let contractsArray = []
+                for (let i = 0; i < contracts.length; i++) {
+                    const contract = await setStoredContractInState(contracts[i])
+                    contractsArray.push(contract)
+                }
+                setEscrows(contractsArray)
+            }
         } catch (e) {
             console.error(e)
         }
@@ -81,14 +99,19 @@ function App() {
             arbiter,
             beneficiary,
             value: value.toString(),
+            approved: false,
             handleApprove: async () => {
-                escrowContract.on("Approved", () => {
-                    document.getElementById(escrowContract.address).className = "complete"
-                    document.getElementById(escrowContract.address).innerText =
-                        "✓ It's been approved!"
-                })
-
                 await approve(escrowContract, signer)
+                const index = escrows.findIndex(
+                    (escrow) => escrow.address === escrowContract.address
+                )
+                const arrayWithoutItem = escrows.filter(
+                    (escrow) => escrow.address !== escrowContract.address
+                )
+                let approvedEscrow = escrows[index]
+                approvedEscrow.approved = true
+                setEscrows([...arrayWithoutItem, approvedEscrow])
+                postContract(approvedEscrow)
             },
         }
 
