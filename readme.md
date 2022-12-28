@@ -19,7 +19,7 @@ This is an image of the page when is active
 
 ## Setup
 
-Install dependencies in the top-level directory with `npm install`.
+Install dependencies in the top-level directory with `yarn`.
 
 After you have installed hardhat locally, you can use commands to test and compile the contracts, among other things. To learn more about these commands run `npx hardhat help`.
 
@@ -27,7 +27,9 @@ Compile the contracts using `npx hardhat compile`. The artifacts will be placed 
 
 ## Server
 
-`cd` into the `/server` directory and run `node index`
+`cd` into the `/server` directory and run `yarn`
+
+To run the server run `node index` from the `/server` directory. Now the smart contracts that you deploy will be saved in the server as long as it's active.
 
 ## Front-End
 
