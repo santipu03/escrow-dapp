@@ -27,10 +27,10 @@ function App() {
 
         getAccounts()
         retrieveContracts()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [account])
 
     async function postContract(escrow) {
-        console.log(escrow)
         try {
             await server.post(`storeContract`, {
                 contract: escrow,
