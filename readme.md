@@ -8,7 +8,14 @@ There are three top-level folders:
 
 1. `/app` - contains the front-end application
 2. `/contracts` - contains the solidity contract
-3. `/tests` - contains tests for the solidity contract
+3. `/server` - contains the server that stores the deployed smart contracts
+4. `/tests` - contains tests for the solidity contract
+
+## Demo
+
+This is an image of the page when is active
+![image](https://user-images.githubusercontent.com/90318659/209812599-4c0c398f-be58-4f97-8b74-dd27ac7c26da.png)
+
 
 ## Setup
 
