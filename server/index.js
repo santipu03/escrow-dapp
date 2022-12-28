@@ -6,12 +6,12 @@ const port = 3042
 app.use(cors())
 app.use(express.json())
 
-const contracts = []
+let contracts = []
 
 app.post("/storeContract", (req, res) => {
     const { contract } = req.body
-    console.log(contract)
-    contracts.push(contract)
+    fitleredContracts = contracts.filter((item) => item.address !== contract.address)
+    contracts = [...fitleredContracts, contract]
 })
 
 app.get("/getContracts", (req, res) => {
